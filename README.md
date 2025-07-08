@@ -1,6 +1,4 @@
-# ToDo App
-
-TaskFlow – Modern Task Management with Auth & Persistence
+# TaskFlow – Modern Task Management with Auth & Persistence
 
 A full-stack ToDo application built with React, Vite, Tailwind CSS, Node.js, Express, and MongoDB. This project demonstrates modern web development best practices, authentication, RESTful APIs, and a beautiful, responsive UI.
 
