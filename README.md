@@ -1,6 +1,6 @@
-# TaskFlow – Modern Task Management with Auth & Persistence
+# TaskPilot AI – Intelligent Task Management with Prioritization & Insights
 
-A full-stack ToDo application built with React, Vite, Tailwind CSS, Node.js, Express, and MongoDB. This project demonstrates modern web development best practices, authentication, RESTful APIs, and a beautiful, responsive UI.
+A full-stack AI-powered task management application built with React, Vite, Tailwind CSS, Node.js, Express, and MongoDB. TaskPilot AI not only helps you manage your to-do list with authentication and persistence but also integrates **AI-based prioritization and task summarization** powered by **Google Gemini Pro API**.
 
 ---
 
@@ -27,6 +27,9 @@ A full-stack ToDo application built with React, Vite, Tailwind CSS, Node.js, Exp
 - Each user has their own to-do list (multi-user support)
 - Responsive, modern UI with Tailwind CSS and Heroicons
 - Persistent storage with MongoDB
+- **AI Assistant for Task Insights and Prioritization**
+  - Daily task summaries
+  - Intelligent task priority suggestions
 - Error handling and user feedback
 - Environment variable support for secure configuration
 
@@ -57,6 +60,8 @@ A full-stack ToDo application built with React, Vite, Tailwind CSS, Node.js, Exp
 - **express-validator**: Input validation
 - **nodemon**: Dev server auto-reload
 - **Tailwind CSS**: For any backend-rendered styles
+- **Google Gemini API**: For AI-powered insights and prioritization
+
 
 ---
 
@@ -98,12 +103,13 @@ README.md
 - Node.js (v18+ recommended)
 - npm
 - MongoDB Atlas account (or local MongoDB)
+- Google account to access Gemini API (or any AI provider of your choice)
 
 ### 1. Clone the repository
 
 ```bash
-git clone <your-repo-url>
-cd ToDo\ App
+git clone <my-repo-url>
+cd TaskPilot-AI
 ```
 
 ### 2. Backend Setup
@@ -111,7 +117,7 @@ cd ToDo\ App
 ```bash
 cd todo-backend
 cp .env.example .env
-# Edit .env and fill in your MongoDB connection string and JWT secret
+# Edit .env and fill in your MongoDB connection string, JWT secret, and Gemini API key
 npm install
 npm start
 ```
@@ -138,7 +144,7 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 - `PORT`: Backend server port (default: 3001)
 - `MONGO_URL`: Your MongoDB connection string
 - `JWT_SECRET`: A strong secret for JWT signing
-
+- `GEMINI_API_KEY`: Your API key from Google AI Studio
 ---
 
 ## How to Use
@@ -146,7 +152,8 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 1. **Sign up** for a new account.
 2. **Log in** with your credentials.
 3. **Add, complete, or delete** to-do items.
-4. **Log out** securely.
+4. Click **Summarize My Day** to get AI-powered prioritization and summaries.
+5. **Log out** securely.
 
 ---
 
@@ -158,6 +165,7 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 - State management with React Context and hooks
 - Responsive UI with Tailwind CSS and icon libraries
 - Environment variable management for security
+- AI integration for enhancing productivity
 - Debugging and troubleshooting real-world issues
 
 ---
@@ -165,6 +173,7 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 ## Challenges & Solutions
 
 - **JWT Authentication:** Ensured the same secret is used for signing and verifying tokens, and handled token expiration and errors gracefully.
+- **AI Integration**: Adapting the Gemini API to understand custom prompt formats and parsing results to fit UI components.
 - **Unique Index Errors:** Resolved MongoDB unique index issues by cleaning up unused indexes and aligning the schema with the code.
 - **Persistent State:** Ensured the frontend always syncs with the backend for reliable data persistence.
 - **UI/UX:** Enhanced forms with icons and proper cursor styles for a professional look and feel.
