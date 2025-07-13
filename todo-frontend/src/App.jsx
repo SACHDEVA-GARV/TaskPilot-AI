@@ -3,6 +3,7 @@ import AppName from "./components/AppName";
 import AddTodo from "./components/AddTodo";
 import TodoItems from "./components/TodoItems";
 import WelcomeMessage from "./components/WelcomeMessage";
+import DailySummary from "./components/DailySummary";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -12,6 +13,7 @@ import {
   getItemsFromServer,
   markItemCompletedOnServer,
 } from "./services/itemsService";
+import { updateTaskPriorities } from "./services/aiService";
 import "./App.css";
 
 function AuthFlow() {
@@ -27,39 +29,40 @@ function TodoApp() {
   const [todoItems, setTodoItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [priorityLoading, setPriorityLoading] = useState(false);
   const { user, token, logout } = useAuth();
 
+  const fetchItems = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      console.log('Fetching items with token:', token ? 'Token exists' : 'No token');
+      
+      const initialItems = await getItemsFromServer(token);
+      console.log('Fetched items:', initialItems);
+      
+      setTodoItems(initialItems || []);
+    } catch (err) {
+      console.error("Error loading items:", err);
+      
+      // If it's an auth error, logout the user
+      if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+        console.log('Authentication error, logging out...');
+        logout();
+      } else {
+        setError("Failed to load tasks. Please try refreshing the page.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchItems = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-        console.log('Fetching items with token:', token ? 'Token exists' : 'No token');
-        
-        const initialItems = await getItemsFromServer(token);
-        console.log('Fetched items:', initialItems);
-        
-        setTodoItems(initialItems || []);
-      } catch (err) {
-        console.error("Error loading items:", err);
-        
-        // If it's an auth error, logout the user
-        if (err.message.includes('401') || err.message.includes('Unauthorized')) {
-          console.log('Authentication error, logging out...');
-          logout();
-        } else {
-          setError("Failed to load tasks. Please try refreshing the page.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchItems();
   }, [token, logout]);
 
@@ -154,6 +157,34 @@ function TodoApp() {
     }
   };
 
+  const handleUpdatePriorities = async () => {
+    if (!token) {
+      setError("Please log in to update priorities.");
+      return;
+    }
+
+    try {
+      setPriorityLoading(true);
+      setError(null);
+      
+      await updateTaskPriorities(token);
+      
+      // Refresh the tasks to get updated priorities
+      await fetchItems();
+      
+    } catch (err) {
+      console.error("Error updating priorities:", err);
+      
+      if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+        logout();
+      } else {
+        setError("Failed to update task priorities. Please try again.");
+      }
+    } finally {
+      setPriorityLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
@@ -166,9 +197,12 @@ function TodoApp() {
   }
 
   const sortedItems = [...todoItems].sort((a, b) => {
-    // Sort by completion status first, then by creation date
+    // Sort by completion status first, then by AI priority, then by creation date
     if (a.completed !== b.completed) {
       return a.completed - b.completed;
+    }
+    if ((a.aiPriority || 0) !== (b.aiPriority || 0)) {
+      return (b.aiPriority || 0) - (a.aiPriority || 0);
     }
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
@@ -184,6 +218,22 @@ function TodoApp() {
                 <span className="text-sm text-gray-600">
                   Welcome, {user?.firstName || 'User'}!
                 </span>
+                <button
+                  onClick={handleUpdatePriorities}
+                  disabled={priorityLoading}
+                  className="bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center gap-2"
+                >
+                  {priorityLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Updating...
+                    </>
+                  ) : (
+                    <>
+                      🤖 Update Priorities
+                    </>
+                  )}
+                </button>
                 <button
                   onClick={logout}
                   className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
@@ -206,6 +256,9 @@ function TodoApp() {
             )}
 
             <AddTodo onNewItem={handleNewItem} />
+            
+            {/* Daily Summary - Only show if there are items */}
+            {todoItems.length > 0 && <DailySummary />}
             
             {todoItems.length === 0 ? (
               <WelcomeMessage />

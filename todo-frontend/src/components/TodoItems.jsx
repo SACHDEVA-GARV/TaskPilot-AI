@@ -8,21 +8,37 @@ const TodoItems = ({ todoItems, onDeleteClick, onToggleComplete }) => {
   const pendingItems = items.filter((item) => item && !item.completed);
   const completedItems = items.filter((item) => item && item.completed);
 
+  // Sort pending items by AI priority (highest first), then by creation date
+  const sortedPendingItems = pendingItems.sort((a, b) => {
+    // First sort by AI priority (descending - highest priority first)
+    if ((a.aiPriority || 0) !== (b.aiPriority || 0)) {
+      return (b.aiPriority || 0) - (a.aiPriority || 0);
+    }
+    // Then by creation date (newest first)
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  // Sort completed items by completion date (most recently completed first)
+  const sortedCompletedItems = completedItems.sort((a, b) => {
+    return new Date(b.updatedAt) - new Date(a.updatedAt);
+  });
+
   return (
     <div>
-      {pendingItems.length > 0 && (
+      {sortedPendingItems.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">
-            Tasks to Do ({pendingItems.length})
+          <h2 className="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            📋 Tasks to Do ({sortedPendingItems.length})
           </h2>
           <div className="space-y-3">
-            {pendingItems.map((item) => (
+            {sortedPendingItems.map((item) => (
               <TodoItem
-                key={item.id || item._id} // Use id or _id as fallback
+                key={item.id || item._id}
                 id={item.id || item._id}
                 todoDate={item.dueDate}
                 todoName={item.name}
                 completed={item.completed}
+                aiPriority={item.aiPriority}
                 onDeleteClick={onDeleteClick}
                 onToggleComplete={onToggleComplete}
               />
@@ -31,19 +47,20 @@ const TodoItems = ({ todoItems, onDeleteClick, onToggleComplete }) => {
         </div>
       )}
 
-      {completedItems.length > 0 && (
+      {sortedCompletedItems.length > 0 && (
         <div className="mt-6 pt-6 border-t border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-500 mb-3">
-            Completed Tasks ({completedItems.length})
+          <h2 className="text-lg font-semibold text-gray-500 mb-3 flex items-center gap-2">
+            ✅ Completed Tasks ({sortedCompletedItems.length})
           </h2>
           <div className="space-y-3">
-            {completedItems.map((item) => (
+            {sortedCompletedItems.map((item) => (
               <TodoItem
-                key={item.id || item._id} // Use id or _id as fallback
+                key={item.id || item._id}
                 id={item.id || item._id}
                 todoDate={item.dueDate}
                 todoName={item.name}
                 completed={item.completed}
+                aiPriority={item.aiPriority}
                 onDeleteClick={onDeleteClick}
                 onToggleComplete={onToggleComplete}
               />

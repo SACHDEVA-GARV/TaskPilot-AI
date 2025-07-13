@@ -1,3 +1,4 @@
+
 const mongoose = require("mongoose");
 
 const todoItemSchema = mongoose.Schema({
@@ -14,6 +15,12 @@ const todoItemSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
+  },
+  aiPriority: {
+    type: Number,
+    min: 1,
+    max: 5,
+    default: null
   }
 }, { timestamps: true });
 
