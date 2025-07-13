@@ -30,6 +30,7 @@ function TodoApp() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [priorityLoading, setPriorityLoading] = useState(false);
+  const [priorityMessage, setPriorityMessage] = useState("");
   const { user, token, logout } = useAuth();
 
   const fetchItems = async () => {
@@ -166,11 +167,20 @@ function TodoApp() {
     try {
       setPriorityLoading(true);
       setError(null);
+      setPriorityMessage("");
       
-      await updateTaskPriorities(token);
+      const result = await updateTaskPriorities(token);
+      
+      // Show success message
+      setPriorityMessage(result || "Priorities updated successfully!");
       
       // Refresh the tasks to get updated priorities
       await fetchItems();
+      
+      // Clear message after 3 seconds
+      setTimeout(() => {
+        setPriorityMessage("");
+      }, 3000);
       
     } catch (err) {
       console.error("Error updating priorities:", err);
@@ -255,10 +265,16 @@ function TodoApp() {
               </div>
             )}
 
+            {priorityMessage && (
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                {priorityMessage}
+              </div>
+            )}
+
             <AddTodo onNewItem={handleNewItem} />
             
-            {/* Daily Summary - Only show if there are items */}
-            {todoItems.length > 0 && <DailySummary />}
+            {/* Daily Summary - Pass todoItems as props */}
+            <DailySummary todoItems={todoItems} />
             
             {todoItems.length === 0 ? (
               <WelcomeMessage />

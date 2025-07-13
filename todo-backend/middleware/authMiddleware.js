@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded.userId).select("-password");
     if (!user) return res.status(401).json({ error: "Invalid token" });
 
     req.user = user;

@@ -134,5 +134,6 @@ const mapServerItemToLocalItem = (serverItem) => {
     completed: serverItem.completed || false,
     createdAt: serverItem.createdAt,
     updatedAt: serverItem.updatedAt,
+    aiPriority: serverItem.aiPriority ?? 0,
   };
 };

@@ -1,4 +1,3 @@
-
 const TodoItem = require("../models/TodoItem");
 const aiService = require("../services/aiService");
 
@@ -6,11 +5,16 @@ exports.createTodoItem = async (req, res) => {
   try {
     const { task, date } = req.body;
     
+    // Validate required fields
+    if (!task || !task.trim()) {
+      return res.status(400).json({ error: 'Task name is required' });
+    }
+    
     // Generate AI priority for the new task
-    const aiPriority = await aiService.generateTaskPriority(task, date);
+    const aiPriority = await aiService.generateTaskPriority(task.trim(), date);
     
     const todoItem = new TodoItem({ 
-      task, 
+      task: task.trim(), 
       date, 
       user: req.user._id,
       aiPriority 
@@ -26,7 +30,7 @@ exports.createTodoItem = async (req, res) => {
 
 exports.getTodoItems = async (req, res) => {
   try {
-    const todoItems = await TodoItem.find({ user: req.user._id });
+    const todoItems = await TodoItem.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json(todoItems);
   } catch (error) {
     console.error('Error fetching todo items:', error);
@@ -37,7 +41,12 @@ exports.getTodoItems = async (req, res) => {
 exports.deleteTodoItem = async (req, res) => {
   try {
     const { id } = req.params;
-    await TodoItem.deleteOne({ _id: id, user: req.user._id });
+    const result = await TodoItem.deleteOne({ _id: id, user: req.user._id });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+    
     res.status(204).send();
   } catch (error) {
     console.error('Error deleting todo item:', error);
@@ -72,7 +81,18 @@ exports.markCompleted = async (req, res) => {
 exports.getDailySummary = async (req, res) => {
   try {
     const todoItems = await TodoItem.find({ user: req.user._id });
-    const summary = await aiService.generateDailySummary(todoItems);
+    
+    // Filter only pending (incomplete) tasks
+    const pendingTasks = todoItems.filter(task => !task.completed);
+    
+    // If no pending tasks, return a simple message without calling AI
+    if (pendingTasks.length === 0) {
+      return res.json({ 
+        summary: "All your tasks are completed! Great job staying productive." 
+      });
+    }
+    
+    const summary = await aiService.generateDailySummary(pendingTasks);
     res.json({ summary });
   } catch (error) {
     console.error('Error generating daily summary:', error);
@@ -82,17 +102,39 @@ exports.getDailySummary = async (req, res) => {
 
 exports.updatePriorities = async (req, res) => {
   try {
-    const todoItems = await TodoItem.find({ user: req.user._id });
-    const updatedTasks = await aiService.bulkUpdatePriorities(todoItems);
+    // Only get incomplete tasks
+    const todoItems = await TodoItem.find({ 
+      user: req.user._id,
+      completed: false
+    });
     
-    // Save updated priorities to database
-    for (const task of updatedTasks) {
-      if (task.aiPriority && task._id) {
-        await TodoItem.findByIdAndUpdate(task._id, { aiPriority: task.aiPriority });
-      }
+    console.log(`Found ${todoItems.length} incomplete tasks to update priorities`);
+    
+    if (todoItems.length === 0) {
+      return res.json({ 
+        message: 'No incomplete tasks to update',
+        updatedCount: 0 
+      });
     }
     
-    res.json({ message: 'Priorities updated successfully' });
+    let updatedCount = 0;
+    
+    // Update priorities for all incomplete tasks
+    for (const task of todoItems) {
+      const priority = await aiService.generateTaskPriority(task.task, task.date);
+      await TodoItem.findByIdAndUpdate(task._id, { 
+        aiPriority: priority 
+      });
+      updatedCount++;
+      console.log(`Updated priority for task: ${task.task} -> Priority: ${priority}`);
+      // Add a small delay to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    
+    res.json({ 
+      message: `Successfully updated priorities for ${updatedCount} tasks`,
+      updatedCount 
+    });
   } catch (error) {
     console.error('Error updating priorities:', error);
     res.status(500).json({ error: 'Failed to update priorities' });

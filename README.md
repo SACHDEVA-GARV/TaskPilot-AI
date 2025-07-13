@@ -1,6 +1,6 @@
 # TaskPilot AI – Intelligent Task Management with Prioritization & Insights
 
-A full-stack AI-powered task management application built with React, Vite, Tailwind CSS, Node.js, Express, and MongoDB. TaskPilot AI not only helps you manage your to-do list with authentication and persistence but also integrates **AI-based prioritization and task summarization** powered by **Google Gemini Pro API**.
+A full-stack AI-powered task management application built with React, Vite, Tailwind CSS, Node.js, Express, and MongoDB. TaskPilot AI helps you manage your to-do list with authentication, persistence, and **AI-based prioritization and daily summaries** powered by **Google Gemini Pro API**.
 
 ---
 
@@ -29,7 +29,8 @@ A full-stack AI-powered task management application built with React, Vite, Tail
 - Persistent storage with MongoDB
 - **AI Assistant for Task Insights and Prioritization**
   - Daily task summaries
-  - Intelligent task priority suggestions
+  - Distributed, intelligent task priority suggestions (unique priorities for up to 5 tasks)
+  - Visual priority badges (Critical, High, Medium, Low, Minimal)
 - Error handling and user feedback
 - Environment variable support for secure configuration
 
@@ -42,9 +43,9 @@ A full-stack AI-powered task management application built with React, Vite, Tail
 - **React**: UI library
 - **Vite**: Fast build tool
 - **Tailwind CSS**: Utility-first CSS framework
-- **@heroicons/react**: Beautiful SVG icons
+- **@heroicons/react**: SVG icons
 - **ESLint**: Linting and code quality
-- **Other**: React Context API for auth, modern hooks
+- **React Context API**: Auth state management
 
 ### Backend
 
@@ -59,9 +60,7 @@ A full-stack AI-powered task management application built with React, Vite, Tail
 - **body-parser**: Request parsing
 - **express-validator**: Input validation
 - **nodemon**: Dev server auto-reload
-- **Tailwind CSS**: For any backend-rendered styles
-- **Google Gemini API**: For AI-powered insights and prioritization
-
+- **Google Gemini API**: AI-powered insights and prioritization
 
 ---
 
@@ -72,26 +71,55 @@ todo-backend/
   app.js
   .env.example
   controllers/
+    authController.js
+    errors.js
+    todoItemsController.js
   middleware/
+    authMiddleware.js
   models/
+    TodoItem.js
+    User.js
   public/
+    home.css
+    output.css
   routes/
+    authRouter.js
+    todoItemsRouter.js
+  services/
+    aiService.js
   utils/
+    pathUtil.js
   package.json
   tailwind.config.js
 todo-frontend/
-  src/
-    components/
-    context/
-    services/
-    assets/
-    App.jsx
-    App.css
-    main.jsx
-  public/
+  index.html
   package.json
   vite.config.js
-README.md
+  public/
+    vite.svg
+  src/
+    App.css
+    App.jsx
+    main.jsx
+    assets/
+      react.svg
+    components/
+      AddTodo.jsx
+      AppName.jsx
+      DailySummary.jsx
+      itemsService.js
+      Login.jsx
+      PriorityBadge.jsx
+      Signup.jsx
+      TodoItem.jsx
+      TodoItems.jsx
+      WelcomeMessage.jsx
+    context/
+      AuthContext.jsx
+    services/
+      aiService.js
+      authService.js
+      itemsService.js
 ```
 
 ---
@@ -108,7 +136,7 @@ README.md
 ### 1. Clone the repository
 
 ```bash
-git clone <my-repo-url>
+git clone https://github.com/SACHDEVA-GARV/TaskPilot-AI
 cd TaskPilot-AI
 ```
 
@@ -145,6 +173,7 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 - `MONGO_URL`: Your MongoDB connection string
 - `JWT_SECRET`: A strong secret for JWT signing
 - `GEMINI_API_KEY`: Your API key from Google AI Studio
+
 ---
 
 ## How to Use
@@ -153,7 +182,8 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 2. **Log in** with your credentials.
 3. **Add, complete, or delete** to-do items.
 4. Click **Summarize My Day** to get AI-powered prioritization and summaries.
-5. **Log out** securely.
+5. Click **Update Priorities** to let the AI assign and distribute unique priorities to your tasks.
+6. **Log out** securely.
 
 ---
 
@@ -166,6 +196,7 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 - Responsive UI with Tailwind CSS and icon libraries
 - Environment variable management for security
 - AI integration for enhancing productivity
+- Prompt engineering for better AI results
 - Debugging and troubleshooting real-world issues
 
 ---
@@ -173,7 +204,8 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 ## Challenges & Solutions
 
 - **JWT Authentication:** Ensured the same secret is used for signing and verifying tokens, and handled token expiration and errors gracefully.
-- **AI Integration**: Adapting the Gemini API to understand custom prompt formats and parsing results to fit UI components.
+- **AI Priority Distribution:** The biggest challenge was getting the AI (Gemini) to assign different, sensible priorities to each task. By engineering a more context-rich prompt and adding backend logic to force unique priorities for up to 5 tasks, we overcame Gemini's tendency to return the same number for all tasks. For larger lists, priorities are distributed evenly and sensibly.
+- **AI Integration:** Adapted the Gemini API to understand custom prompt formats and parse results to fit UI components.
 - **Unique Index Errors:** Resolved MongoDB unique index issues by cleaning up unused indexes and aligning the schema with the code.
 - **Persistent State:** Ensured the frontend always syncs with the backend for reliable data persistence.
 - **UI/UX:** Enhanced forms with icons and proper cursor styles for a professional look and feel.
@@ -183,8 +215,8 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 
 ## Demo Video
 
-[Demo video link here]
-
+[\[Demo video link here\]
+](https://drive.google.com/file/d/1253PgBkMQorTb5uiOfDaRMCxyyyl43Y7/view?usp=sharing)
 ---
 
 ## License
