@@ -1,7 +1,7 @@
 // authService.js
 export const loginUser = async (email, password) => {
   try {
-    const response = await fetch("http://localhost:3001/api/auth/login", {
+    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export const loginUser = async (email, password) => {
 
 export const signupUser = async (firstName, email, password) => {
   try {
-    const response = await fetch("http://localhost:3001/api/auth/signup", {
+    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/auth/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

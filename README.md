@@ -1,124 +1,178 @@
-# Intelli-Task AI (Java / Spring Boot Edition)
+# TaskPilot AI – Intelligent Task Management with Prioritization & Insights
 
-### Project Status: Active Migration (As of September 24, 2025)
-
-This repository documents the development of Intelli-Task AI, a secure, full-stack task management application featuring AI-powered prioritization and daily summaries.
-
-**Current Status:** The application is being actively migrated from a stable **MERN stack proof-of-concept** to a more scalable and enterprise-ready **Java Spring Boot architecture**. The initial commit contains the working code from the MERN version to establish a functional baseline and showcase the core features. The full Java backend structure will be pushed shortly to replace this baseline.
+A full-stack AI-powered task management application built with React, Vite, Tailwind CSS, Node.js, Express, and MongoDB. TaskPilot AI helps you manage your to-do list with authentication, persistence, and **AI-based prioritization and daily summaries** powered by **Google Gemini Pro API**.
 
 ---
 
 ## Table of Contents
 
 - [Features](#features)
-- [Target Tech Stack](#target-tech-stack)
-- [Target Project Structure](#target-project-structure)
-- [Target Setup & Installation](#target-setup--installation)
-- [Environment Variables (for Java Backend)](#environment-variables-for-java-backend)
+- [Tech Stack & Dependencies](#tech-stack--dependencies)
+- [Project Structure](#project-structure)
+- [Setup & Installation](#setup--installation)
+- [Environment Variables](#environment-variables)
 - [How to Use](#how-to-use)
-- [Project Objectives & Learning Goals](#project-objectives--learning-goals)
-- [Anticipated Challenges & Solutions](#anticipated-challenges--solutions)
-- [Demo Video (of v1.0 MERN Proof-of-Concept)](#demo-video-of-v10-mern-proof-of-concept)
+- [What I Learned](#what-i-learned)
+- [Challenges & Solutions](#challenges--solutions)
+- [Demo Video](#demo-video)
 - [License](#license)
 
 ---
 
 ## Features
 
-- **User Authentication:** Secure signup and login functionality with JWT.
-- **Multi-User Support:** Each user has their own private to-do list.
-- **Full CRUD Functionality:** Add, view, complete, and delete to-do items.
-- **AI Assistant:** Integration with Google Gemini API for:
-    - Daily task summaries.
-    - Distributed, intelligent task priority suggestions.
-    - Visual priority badges (Critical, High, Medium, Low).
-- **Responsive UI:** A modern, mobile-first user interface built with React and Tailwind CSS.
-- **Persistent Storage:** Reliable data storage in a relational database.
+- User authentication (signup/login) with JWT
+- Secure password hashing (bcryptjs)
+- Add, view, complete, and delete to-do items
+- Each user has their own to-do list (multi-user support)
+- Responsive, modern UI with Tailwind CSS and Heroicons
+- Persistent storage with MongoDB
+- **AI Assistant for Task Insights and Prioritization**
+  - Daily task summaries
+  - Distributed, intelligent task priority suggestions (unique priorities for up to 5 tasks)
+  - Visual priority badges (Critical, High, Medium, Low, Minimal)
+- Error handling and user feedback
+- Environment variable support for secure configuration
 
 ---
 
-## Target Tech Stack
-
-### Backend
-- **Language/Framework:** Java, Spring Boot
-- **Security:** Spring Security (for JWT Authentication)
-- **Database:** Spring Data JPA, MySQL
-- **Build Tool:** Maven
-- **Testing:** JUnit
-- **DevOps:** Docker, AWS (Elastic Beanstalk), CI/CD with GitHub Actions
+## Tech Stack & Dependencies
 
 ### Frontend
-- **Library/Framework:** React, Vite
-- **Styling:** Tailwind CSS
-- **State Management:** React Context API
-- **Icons:** @heroicons/react
+
+- **React**: UI library
+- **Vite**: Fast build tool
+- **Tailwind CSS**: Utility-first CSS framework
+- **@heroicons/react**: SVG icons
+- **ESLint**: Linting and code quality
+- **React Context API**: Auth state management
+
+### Backend
+
+- **Node.js**: JavaScript runtime
+- **Express**: Web framework
+- **MongoDB**: NoSQL database
+- **Mongoose**: MongoDB ODM
+- **jsonwebtoken**: JWT authentication
+- **bcryptjs**: Password hashing
+- **dotenv**: Environment variable management
+- **cors**: Cross-origin resource sharing
+- **body-parser**: Request parsing
+- **express-validator**: Input validation
+- **nodemon**: Dev server auto-reload
+- **Google Gemini API**: AI-powered insights and prioritization
 
 ---
 
-## Target Project Structure
-
-The final project will follow a standard Maven and Create React App structure to ensure separation of concerns.
+## Project Structure
 
 ```
-Backend (Spring Boot)
-intelli-task-backend/
-├── src/main/java/com/your-domain/intellitask/
-│   ├── controller/
-│   ├── model/
-│   ├── repository/
-│   ├── service/
-│   └── security/
-├── src/main/resources/
-│   └── application.properties
-└── pom.xml
-
-Frontend (React)
-intelli-task-frontend/
-├── public/
-├── src/
-│   ├── components/
-│   ├── context/
-│   └── services/
-├── package.json
-└── vite.config.js
+todo-backend/
+  app.js
+  .env.example
+  controllers/
+    authController.js
+    errors.js
+    todoItemsController.js
+  middleware/
+    authMiddleware.js
+  models/
+    TodoItem.js
+    User.js
+  public/
+    home.css
+    output.css
+  routes/
+    authRouter.js
+    todoItemsRouter.js
+  services/
+    aiService.js
+  utils/
+    pathUtil.js
+  package.json
+  tailwind.config.js
+todo-frontend/
+  index.html
+  package.json
+  vite.config.js
+  public/
+    vite.svg
+  src/
+    App.css
+    App.jsx
+    main.jsx
+    assets/
+      react.svg
+    components/
+      AddTodo.jsx
+      AppName.jsx
+      DailySummary.jsx
+      itemsService.js
+      Login.jsx
+      PriorityBadge.jsx
+      Signup.jsx
+      TodoItem.jsx
+      TodoItems.jsx
+      WelcomeMessage.jsx
+    context/
+      AuthContext.jsx
+    services/
+      aiService.js
+      authService.js
+      itemsService.js
 ```
 
 ---
 
-## Target Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
-- Java JDK (v17+ recommended)
-- Apache Maven
-- Node.js (v18+ recommended)
-- MySQL Server
 
-### 1. Backend Setup
+- Node.js (v18+ recommended)
+- npm
+- MongoDB Atlas account (or local MongoDB)
+- Google account to access Gemini API (or any AI provider of your choice)
+
+### 1. Clone the repository
+
 ```bash
-cd intelli-task-backend
-# Create and fill in application.properties from application.properties.example
-mvn spring-boot:run
+git clone https://github.com/SACHDEVA-GARV/TaskPilot-AI
+cd TaskPilot-AI
 ```
 
-### 2. Frontend Setup
+### 2. Backend Setup
+
 ```bash
-cd intelli-task-frontend
+cd todo-backend
+cp .env.example .env
+# Edit .env and fill in your MongoDB connection string, JWT secret, and Gemini API key
+npm install
+npm start
+```
+
+### 3. Frontend Setup
+
+```bash
+cd ../todo-frontend
 npm install
 npm run dev
 ```
 
+### 4. Access the App
+
+- Frontend: [http://localhost:5173](http://localhost:5173)
+- Backend API: [http://localhost:3001](http://localhost:3001)
+
 ---
 
-## Environment Variables (for Java Backend)
+## Environment Variables
 
-Create an `application.properties` file in `src/main/resources/` with the following keys:
+Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 
-- `server.port`: Backend server port (e.g., 8080)
-- `spring.datasource.url`: Your MySQL connection string (e.g., `jdbc:mysql://localhost:3306/intellitaskdb`)
-- `spring.datasource.username`: Your MySQL username
-- `spring.datasource.password`: Your MySQL password
-- `jwt.secret`: A strong secret for JWT signing
-- `gemini.api.key`: Your API key from Google AI Studio
+- `PORT`: Backend server port (default: 3001)
+- `MONGO_URL`: Your MongoDB connection string
+- `JWT_SECRET`: A strong secret for JWT signing
+- `GEMINI_API_KEY`: Your API key from Google AI Studio
 
 ---
 
@@ -128,37 +182,47 @@ Create an `application.properties` file in `src/main/resources/` with the follow
 2. **Log in** with your credentials.
 3. **Add, complete, or delete** to-do items.
 4. Click **Summarize My Day** to get AI-powered prioritization and summaries.
+5. Click **Update Priorities** to let the AI assign and distribute unique priorities to your tasks.
+6. **Log out** securely.
 
 ---
 
-## Project Objectives & Learning Goals
+## What I Learned
 
-The primary goal of this migration is to re-architect a successful prototype into an enterprise-grade application. Key objectives include:
-
-- Building a highly scalable, type-safe backend using Java and the Spring Boot ecosystem.
-- Implementing robust security patterns with Spring Security.
-- Mastering containerization (Docker) and cloud deployment (AWS) for a full-stack application.
-- Applying SDLC best practices, including unit testing (JUnit) and setting up a CI/CD pipeline (GitHub Actions).
-- Deepening knowledge of relational database design and ORM with Spring Data JPA.
-
----
-
-## Anticipated Challenges & Solutions
-
-- **Data Model Migration:** The primary challenge will be translating schema-less MongoDB data models (from Mongoose) into structured, relational JPA Entities for MySQL, ensuring data integrity.
-- **Authentication Refactoring:** The logic for creating, signing, and validating JWTs will be re-implemented from scratch using the robust Spring Security framework.
-- **API Contract Consistency:** Care will be taken to ensure the new Java-based REST API maintains the same contract (endpoints, request/response bodies) as the original Node.js API to prevent breaking the existing React frontend.
+- Full-stack app architecture and separation of concerns
+- Secure authentication with JWT and password hashing
+- RESTful API design and error handling
+- State management with React Context and hooks
+- Responsive UI with Tailwind CSS and icon libraries
+- Environment variable management for security
+- AI integration for enhancing productivity
+- Prompt engineering for better AI results
+- Debugging and troubleshooting real-world issues
 
 ---
 
-## Demo Video (of v1.0 MERN Proof-of-Concept)
+## Challenges & Solutions
 
-**Note:** This video demonstrates the fully functional v1.0 proof-of-concept built on the MERN stack. The user experience and core features will be identical in the final Java version.
+- **JWT Authentication:** Ensured the same secret is used for signing and verifying tokens, and handled token expiration and errors gracefully.
+- **AI Priority Distribution:** The biggest challenge was getting the AI (Gemini) to assign different, sensible priorities to each task. By engineering a more context-rich prompt and adding backend logic to force unique priorities for up to 5 tasks, we overcame Gemini's tendency to return the same number for all tasks. For larger lists, priorities are distributed evenly and sensibly.
+- **AI Integration:** Adapted the Gemini API to understand custom prompt formats and parse results to fit UI components.
+- **Unique Index Errors:** Resolved MongoDB unique index issues by cleaning up unused indexes and aligning the schema with the code.
+- **Persistent State:** Ensured the frontend always syncs with the backend for reliable data persistence.
+- **UI/UX:** Enhanced forms with icons and proper cursor styles for a professional look and feel.
+- **Error Handling:** Provided user-friendly error messages and handled edge cases (e.g., duplicate emails, invalid tokens).
 
-[**Watch the Demo on Google Drive**](https://drive.google.com/file/d/1253PgBkMQorTb5uiOfDaRMCxyyyl43Y7/view?usp=sharing)
+---
 
+## Demo Video
+
+[\[Demo video link here\]
+](https://drive.google.com/file/d/1253PgBkMQorTb5uiOfDaRMCxyyyl43Y7/view?usp=sharing)
 ---
 
 ## License
 
-This project is for educational and portfolio purposes.
+This project is for educational and interview purposes.
+
+---
+
+**Feel free to reach out if you have any questions or feedback!**

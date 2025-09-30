@@ -5,7 +5,7 @@ export const getDailySummary = async (token) => {
       throw new Error('No authentication token available');
     }
 
-    const response = await fetch("http://localhost:3001/api/todo/ai/daily-summary", {
+    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/todo/ai/daily-summary", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -30,7 +30,7 @@ export const updateTaskPriorities = async (token) => {
       throw new Error('No authentication token available');
     }
 
-    const response = await fetch("http://localhost:3001/api/todo/ai/update-priorities", {
+    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/todo/ai/update-priorities", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

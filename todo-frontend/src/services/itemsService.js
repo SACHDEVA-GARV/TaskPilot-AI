@@ -4,7 +4,7 @@ export const addItemToServer = async (task, date, token) => {
       throw new Error('No authentication token available');
     }
 
-    const response = await fetch("http://localhost:3001/api/todo", {
+    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/todo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export const getItemsFromServer = async (token) => {
       throw new Error('No authentication token available');
     }
 
-    const response = await fetch("http://localhost:3001/api/todo", {
+    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/todo", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -69,7 +69,7 @@ export const markItemCompletedOnServer = async (id, token, completed) => {
     }
 
     const response = await fetch(
-      `http://localhost:3001/api/todo/${id}/completed`,
+      `https://intelli-task-ai-backend.onrender.com/api/todo/${id}/completed`,
       {
         method: "PUT",
         headers: {
@@ -103,7 +103,7 @@ export const deleteItemFromServer = async (id, token) => {
       throw new Error('Item ID is required');
     }
 
-    const response = await fetch(`http://localhost:3001/api/todo/${id}`, {
+    const response = await fetch(`https://intelli-task-ai-backend.onrender.com/api/todo/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
