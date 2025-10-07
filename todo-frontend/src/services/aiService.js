@@ -1,11 +1,13 @@
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const getDailySummary = async (token) => {
   try {
     if (!token) {
       throw new Error('No authentication token available');
     }
 
-    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/todo/ai/daily-summary", {
+  const response = await fetch(`${API_URL}/api/todo/ai/daily-summary`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -30,7 +32,7 @@ export const updateTaskPriorities = async (token) => {
       throw new Error('No authentication token available');
     }
 
-    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/todo/ai/update-priorities", {
+  const response = await fetch(`${API_URL}/api/todo/ai/update-priorities`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

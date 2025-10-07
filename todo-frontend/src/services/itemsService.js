@@ -1,10 +1,12 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const addItemToServer = async (task, date, token) => {
   try {
     if (!token) {
       throw new Error('No authentication token available');
     }
 
-    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/todo", {
+  const response = await fetch(`${API_URL}/api/todo`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +34,7 @@ export const getItemsFromServer = async (token) => {
       throw new Error('No authentication token available');
     }
 
-    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/todo", {
+  const response = await fetch(`${API_URL}/api/todo`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -69,7 +71,7 @@ export const markItemCompletedOnServer = async (id, token, completed) => {
     }
 
     const response = await fetch(
-      `https://intelli-task-ai-backend.onrender.com/api/todo/${id}/completed`,
+      `${API_URL}/api/todo/${id}/completed`,
       {
         method: "PUT",
         headers: {
@@ -103,7 +105,7 @@ export const deleteItemFromServer = async (id, token) => {
       throw new Error('Item ID is required');
     }
 
-    const response = await fetch(`https://intelli-task-ai-backend.onrender.com/api/todo/${id}`, {
+  const response = await fetch(`${API_URL}/api/todo/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

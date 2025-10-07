@@ -1,7 +1,9 @@
 // authService.js
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const loginUser = async (email, password) => {
   try {
-    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/auth/login", {
+  const response = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +32,7 @@ export const loginUser = async (email, password) => {
 
 export const signupUser = async (firstName, email, password) => {
   try {
-    const response = await fetch("https://intelli-task-ai-backend.onrender.com/api/auth/signup", {
+  const response = await fetch(`${API_URL}/api/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

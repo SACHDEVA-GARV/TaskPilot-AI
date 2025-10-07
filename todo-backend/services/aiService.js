@@ -2,8 +2,9 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 class AIService {
   constructor() {
+
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-pro' });
   }
 
   async generateTaskPriority(task, dueDate) {
@@ -182,13 +183,22 @@ class AIService {
 
       const result = await this.model.generateContent(prompt);
       const response = await result.response;
+      
+      // --- NEW DEBUGGING LOG #1: See the raw response ---
+      console.log('--- DEBUG: Raw API Response ---');
+      console.log(JSON.stringify(response, null, 2)); 
+      // --- END OF DEBUGGING LOG ---
+
       return response.text().trim();
     } catch (error) {
-      console.error('Error generating daily summary:', error);
-      return "You have tasks to complete today. Stay focused and tackle them one by one!";
+      // --- MODIFIED DEBUGGING LOG #2: See the full error object ---
+      console.error('--- ERROR: Full error object from generateDailySummary ---');
+      console.error(error);
+      // --- END OF DEBUGGING LOG ---
+      return "sleep well!";
+      //return "You have tasks to complete today. Stay focused and tackle them one by one!";
     }
   }
 }
 
 module.exports = new AIService();
-
