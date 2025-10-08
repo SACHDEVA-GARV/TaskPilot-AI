@@ -1,5 +1,12 @@
 # TaskPilot AI – Intelligent Task Management with Prioritization & Insights
 
+## Deployed Application & Demo Video
+
+🔗 **[Live App → TaskPilot AI](https://task-pilot-ai.vercel.app/)**
+
+🎥 **[Demo Video → Watch on Google Drive](https://drive.google.com/file/d/1253PgBkMQorTb5uiOfDaRMCxyyyl43Y7/view?usp=sharing)**
+
+---
 A full-stack AI-powered task management application built with React, Vite, Tailwind CSS, Node.js, Express, and MongoDB. TaskPilot AI helps you manage your to-do list with authentication, persistence, and **AI-based prioritization and daily summaries** powered by **Google Gemini Pro API**.
 
 ---
@@ -213,11 +220,7 @@ Copy `.env.example` to `.env` in the `todo-backend` folder and fill in:
 
 ---
 
-## Demo Video
 
-[\[Demo video link here\]
-](https://drive.google.com/file/d/1253PgBkMQorTb5uiOfDaRMCxyyyl43Y7/view?usp=sharing)
----
 
 ## License
 
